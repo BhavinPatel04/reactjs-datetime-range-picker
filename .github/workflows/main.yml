@@ -11,8 +11,10 @@ on:
           - patch
           - minor
           - major
+
 permissions:
   contents: write
+
 jobs:
   version:
     name: Create new version ${{ github.event.inputs.version }}
@@ -28,7 +30,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
+
       - name: Generate new version
         run: npm version ${{ github.event.inputs.version }}
+
       - name: Push new version tag to repository
         run: git push origin main --tags
