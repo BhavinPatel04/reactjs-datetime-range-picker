@@ -68,6 +68,7 @@
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^9.1.0",
@@ -103,5 +104,10 @@
     "@nextui-org/react": "^2.2.10",
     "framer-motion": "^11.0.8",
     "global": "^4.4.0"
+  },
+  "resolutions": {
+    "wrap-ansi": "7.0.0",
+    "string-width": "4.2.3",
+    "jackspeak": "2.1.1"
   }
 }
