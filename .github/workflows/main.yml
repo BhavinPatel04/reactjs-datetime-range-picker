@@ -11,7 +11,8 @@ on:
           - patch
           - minor
           - major
-
+permissions:
+  contents: write
 jobs:
   version:
     name: Create new version ${{ github.event.inputs.version }}
