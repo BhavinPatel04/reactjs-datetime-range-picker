@@ -40,10 +40,10 @@ export interface Props {
   settings: Settings;
   dateRangeModel: DateRangeModel;
   canBeEmpty: boolean;
-  dateRangeModelChange: (options: Options | DateRangeModel) => void;
-  dateRangeChanged: (options: Options) => void;
-  inputFocusBlur: (options: Record<string, unknown>) => void;
-  selectedDate: (options: Options) => void;
+  dateRangeModelChange?: (options: Options | DateRangeModel) => void;
+  dateRangeChanged?: (options: Options) => void;
+  inputFocusBlur?: (options: Record<string, unknown>) => void;
+  selectedDate?: (options: Options) => void;
   inputAs?: ElementType;
   selectAs?: SELECT_AS;
   buttonAs?: ElementType;
@@ -70,13 +70,12 @@ const DateTimeRangePicker: React.FC<Props> = ({
   const [config, setConfig] = useState({} as Config);
   const [dateRangeModel, setDateRangeModel] = useState({} as DateRangeModel);
   const [canBeEmpty, setCanBeEmpty] = useState(false);
-  const filterInputBox = useRef(null);
-  const itemCell = useRef(null);
+  const filterInputBox = useRef<HTMLInputElement>(null);
 
   const onCalendarClose = (): void => {
     if (config.startDate && config.endDate) {
       if (filterInputBox) {
-        (filterInputBox.current as any).nativeElement.classList.remove("empty-filter");
+        filterInputBox.current?.classList.remove("empty-filter");
       }
       setState({
         ...state,
@@ -129,6 +128,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
     _config = parsedData.config;
     _dateRangeModel = parsedData.dateRangeModel;
     _state = updateInputField(_state, _config);
+
     setSettings(_settings);
     setOptions(_options);
     setDateRangeModel(Object.assign(dateRangeModel, _dateRangeModel));
@@ -269,9 +269,8 @@ const DateTimeRangePicker: React.FC<Props> = ({
         date = _config.endDate;
         time = _config.endTime;
       }
-      const generatedCalendar = generateCalendar(_state, _config, date ?? "", side);
-      _state = generatedCalendar.state;
-      _state.dates[side] = generatedCalendar.dates;
+      const generatedCalendarState = generateCalendar(_state, _config, date ?? "", side);
+      _state = generatedCalendarState;
       if (_config.timePicker) {
         const generatedTimePicker = generateTimePicker(_state, _config, time ?? "", side);
         _state = generatedTimePicker.state;
@@ -498,9 +497,8 @@ const DateTimeRangePicker: React.FC<Props> = ({
     // Order is important left - right
     if (!_config.singleDatePicker) {
       _state.sides.push("left");
-      const generatedCalendar = generateCalendar(_state, _config, _config.startDate!, "left");
-      _state = generatedCalendar.state;
-      _state.dates.left = generatedCalendar.dates;
+      const generatedCalendarState = generateCalendar(_state, _config, _config.startDate!, "left");
+      _state = generatedCalendarState;
       if (_config.timePicker) {
         const generatedTimePicker = generateTimePicker(_state, _config, _config.startTime!, "left");
         _state = generatedTimePicker.state;
@@ -508,9 +506,8 @@ const DateTimeRangePicker: React.FC<Props> = ({
       }
     }
     _state.sides.push("right");
-    const generatedCalendar = generateCalendar(_state, _config, _config.endDate!, "right");
-    _state = generatedCalendar.state;
-    _state.dates.right = generatedCalendar.dates;
+    const generatedCalendarState = generateCalendar(_state, _config, _config.endDate!, "right");
+    _state = generatedCalendarState;
     if (_config.timePicker) {
       const generatedTimePicker = generateTimePicker(_state, _config, _config.endTime!, "right");
       _state = generatedTimePicker.state;
@@ -522,6 +519,23 @@ const DateTimeRangePicker: React.FC<Props> = ({
   useEffect(() => {
     init(userCanBeEmpty, userOptions, userSettings, userDateRangeModel);
   }, [userCanBeEmpty, userOptions, userSettings, userDateRangeModel]);
+
+  useEffect(() => {
+    document.addEventListener("click", (event: MouseEvent) => {
+      if (
+        state.isCalendarVisible &&
+        event.target &&
+        !(event.target as HTMLElement)?.parentElement?.getElementsByClassName(
+          "ngx-datetime-range-picker-select-panel",
+        ).length &&
+        !(event.target as HTMLElement)?.closest(".mat-mdc-option")
+        // this.element.nativeElement !== event.target &&
+        // !this.element.nativeElement.contains(event.target)
+      ) {
+        onCalendarClose();
+      }
+    });
+  }, []);
 
   const onComponentClick = (): void => {
     setState({
@@ -562,17 +576,17 @@ const DateTimeRangePicker: React.FC<Props> = ({
       isCalendarVisible: false,
     });
     if (filterInputBox) {
-      (filterInputBox.current as any).nativeElement.classList.remove("empty-filter");
+      filterInputBox.current?.classList.remove("empty-filter");
     }
     doDateRangeModelChange();
-    dateRangeChanged(dateRangeModel);
+    dateRangeChanged && dateRangeChanged(dateRangeModel);
   };
 
   const doDateRangeModelChange = (): void => {
     const dateRangeModel: DateTimeRangeModelChangeOutput = getDateRangeModel(
       config.inputDateFormat,
     );
-    dateRangeModelChange(dateRangeModel);
+    dateRangeModelChange && dateRangeModelChange(dateRangeModel);
   };
 
   const getDateRangeModel = (format?: string): DateTimeRangeModelChangeOutput => {
@@ -580,7 +594,9 @@ const DateTimeRangePicker: React.FC<Props> = ({
     if (undefined !== dateRangeModel && !isEmpty(dateRangeModel)) {
       dRModel = cloneDeep(dateRangeModel) as DateTimeRangeModelChangeOutput;
     }
-    dRModel[config.type!] = getNgxDatetimeRangeChangeOutput(format);
+    if (config.type) {
+      dRModel[config.type] = getNgxDatetimeRangeChangeOutput(format);
+    }
     return dRModel;
   };
 
@@ -675,10 +691,11 @@ const DateTimeRangePicker: React.FC<Props> = ({
         ? Number(moment(endDate, DEFAULT_DATE_FORMAT).format(config.outputDateFormat))
         : null;
     }
-    selectedDate({
-      startDate: outputStartDate!,
-      endDate: outputEndDate!,
-    });
+    selectedDate &&
+      selectedDate({
+        startDate: outputStartDate!,
+        endDate: outputEndDate!,
+      });
 
     _config.startTime = `${_state.selectedHour.left as string}:${
       _state.selectedMinute.left as string
@@ -693,6 +710,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
   };
 
   const updateInputField = (_state: State, _config: Config): State => {
+    let internalState: State = cloneDeep(_state) as State;
     const startDate = service.formatStartDate(_config, _config.viewDateFormat!);
     const endDate = _config.endDate
       ? moment(_config.endDate, DEFAULT_DATE_FORMAT).format(_config.viewDateFormat)
@@ -715,7 +733,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
         dateText = `${startDateText} - ${endDataText}`;
       }
 
-      _state.selectedDateText = dateText;
+      internalState.selectedDateText = dateText;
     } else {
       let startDateText = startDate;
       let endDataText = endDate;
@@ -725,20 +743,20 @@ const DateTimeRangePicker: React.FC<Props> = ({
         endDataText = `${endDate} ${_config.endTime}`;
       }
 
-      _state.selectedDateText = `${startDateText} - ${endDataText}`;
+      internalState.selectedDateText = `${startDateText} - ${endDataText}`;
     }
 
-    if (canBeEmpty || !_state.selectedDateText.includes("nvalid")) {
-      _state.isValidFilter = true;
+    if (canBeEmpty || !internalState.selectedDateText.includes("nvalid")) {
+      internalState.isValidFilter = true;
     }
 
     if (_config.type === "yearly") {
-      _state.dateTitleText.left = `${startDate}`;
-      _state.dateTitleText.right = `${endDate}`;
+      internalState.dateTitleText.left = `${startDate}`;
+      internalState.dateTitleText.right = `${endDate}`;
     } else {
-      _state = updateActiveItemInputField(_state, _config);
+      internalState = updateActiveItemInputField(internalState, _config);
     }
-    return _state;
+    return internalState;
   };
 
   const updateActiveItemInputField = (__state: State, _config: Config): State => {
@@ -751,56 +769,56 @@ const DateTimeRangePicker: React.FC<Props> = ({
   };
 
   const updateSide = (_state: State, _config: Config, side: CALENDAR_SIDES): State => {
-    let itemFirstDate = (_state.activeItem[side] as ActiveItemSide).firstDay;
-    let itemLastDate = (_state.activeItem[side] as ActiveItemSide).lastDay;
-    const itemText = (_state.activeItem[side] as ActiveItemSide).rowItemText;
+    const internalState: State = cloneDeep(_state) as State;
+    let itemFirstDate = (internalState.activeItem[side] as ActiveItemSide).firstDay;
+    let itemLastDate = (internalState.activeItem[side] as ActiveItemSide).lastDay;
+    const itemText = (internalState.activeItem[side] as ActiveItemSide).rowItemText;
     itemFirstDate = moment(itemFirstDate, DEFAULT_DATE_FORMAT).format(_config.viewDateFormat);
     itemLastDate = moment(itemLastDate, DEFAULT_DATE_FORMAT).format(_config.viewDateFormat);
     if (_config.type !== "daily") {
-      _state.dateTitleText[side] = `${itemText} (${itemFirstDate} - ${itemLastDate})`;
+      internalState.dateTitleText[side] = `${itemText} (${itemFirstDate} - ${itemLastDate})`;
     } else {
-      _state.dateTitleText[side] = `${itemFirstDate}`;
+      internalState.dateTitleText[side] = `${itemFirstDate}`;
     }
-    return _state;
+    return internalState;
   };
 
   const onCalendarLabelChange = (label: string, side: CALENDAR_SIDES, type: string): void => {
-    let _state: State = cloneDeep(state) as State;
+    let stateCopy: State = cloneDeep(state) as State;
     const _config: Config = cloneDeep(config) as Config;
-    _state.isCalendarVisible = true;
+    stateCopy.isCalendarVisible = true;
     if (type === "month") {
-      _state.selectedMonth[side] = label;
+      stateCopy.selectedMonth[side] = label;
     } else if (type === "year") {
-      _state.selectedYear[side] = label;
+      stateCopy.selectedYear[side] = Number(label);
     }
 
     if (_config.type !== "daily") {
-      _state.selectedMonth[side] = "Jun";
+      stateCopy.selectedMonth[side] = "Jun";
     }
 
     if (_config.type !== "yearly") {
-      const selectedMonth = `${state.selectedMonth[side] as string} ${
-        state.selectedYear[side] as string
+      const selectedMonth = `${stateCopy.selectedMonth[side] as string} ${
+        stateCopy.selectedYear[side] as string
       }`;
       const date: string = moment(selectedMonth, "MMM YYYY")
         .startOf("month")
         .format(DEFAULT_DATE_FORMAT);
-      const generatedCalendar = generateCalendar(_state, _config, date, side);
-      _state = generatedCalendar.state;
-      _state.dates[side] = generatedCalendar.dates;
+      const generatedCalendarState = generateCalendar(stateCopy, _config, date, side);
+      stateCopy = generatedCalendarState;
     } else {
-      if (_state.selectedYear.left! <= state.selectedYear.right! && side === "right") {
-        _config.startDate = moment(state.selectedYear.left as number, "YYYY")
+      if (stateCopy.selectedYear.left! <= stateCopy.selectedYear.right! && side === "right") {
+        _config.startDate = moment(stateCopy.selectedYear.left as number, "YYYY")
           .startOf("year")
           .format(DEFAULT_DATE_FORMAT);
-        _config.endDate = moment(state.selectedYear.right as number, "YYYY")
+        _config.endDate = moment(stateCopy.selectedYear.right as number, "YYYY")
           .endOf("year")
           .format(DEFAULT_DATE_FORMAT);
 
         doApply();
       }
       const internalConfig: Config = {
-        startDate: moment(state.selectedYear.left as number, "YYYY")
+        startDate: moment(stateCopy.selectedYear.left as number, "YYYY")
           .startOf("year")
           .format(DEFAULT_DATE_FORMAT),
         type: "yearly",
@@ -809,10 +827,10 @@ const DateTimeRangePicker: React.FC<Props> = ({
       const endDate: string = config.endDate
         ? moment(config.endDate, DEFAULT_DATE_FORMAT).format(config.viewDateFormat)
         : "";
-      _state.dateTitleText.left = `${startDate}`;
-      _state.dateTitleText.right = `${endDate}`;
+      stateCopy.dateTitleText.left = `${startDate}`;
+      stateCopy.dateTitleText.right = `${endDate}`;
     }
-    setState(_state);
+    setState(stateCopy);
     setConfig(_config);
   };
 
@@ -876,12 +894,12 @@ const DateTimeRangePicker: React.FC<Props> = ({
     _config: Config,
     date: string | number,
     side: CALENDAR_SIDES,
-  ): { dates: DateSide; state: State } => {
-    // const _state: State = cloneDeep(state) as State;
-    _state.selectedMonth[side] = moment(date, DEFAULT_DATE_FORMAT).format("MMM");
-    _state.selectedYear[side] = service.getSelectedYear(date);
-    const calendarLabel = `${_state.selectedMonth[side] as string} ${
-      _state.selectedYear[side] as string
+  ): State => {
+    const stateCopy: State = cloneDeep(_state) as State;
+    stateCopy.selectedMonth[side] = moment(date, DEFAULT_DATE_FORMAT).format("MMM");
+    stateCopy.selectedYear[side] = service.getSelectedYear(date);
+    const calendarLabel = `${stateCopy.selectedMonth[side] as string} ${
+      stateCopy.selectedYear[side] as string
     }`;
 
     const dates: DateSide = {
@@ -889,37 +907,37 @@ const DateTimeRangePicker: React.FC<Props> = ({
       months: service.getMonthsAvailable(
         _config.minDate as string,
         _config.maxDate as string,
-        _state.selectedYear[side] as number,
+        stateCopy.selectedYear[side] as number,
       ),
       years: service.getYearsAvailable(_config),
       itemRows: [] as DateRow[],
     };
 
-    _state.weekDayOptions = [""];
+    stateCopy.weekDayOptions = [""];
 
     if (_config.type !== "yearly") {
       // moment returns wrong week number
       const monthStartWeekNumber: number = moment(date, DEFAULT_DATE_FORMAT)
-        .year(_state.selectedYear[side] as number)
+        .year(stateCopy.selectedYear[side] as number)
         .startOf("month")
         .week(); // previousMonthLastWeek
-      const yearStartDate = moment(_state.selectedYear[side] as number, "YYYY")
+      const yearStartDate = moment(stateCopy.selectedYear[side] as number, "YYYY")
         .startOf("year")
         .format(DEFAULT_DATE_FORMAT);
       let numberOfRows = 1;
 
       if (_config.type === "daily") {
         numberOfRows = service.getNumberOfWeeks(date as string)!;
-        _state.weekDayOptions = ["su", "mo", "tu", "we", "th", "fr", "sa"];
+        stateCopy.weekDayOptions = ["su", "mo", "tu", "we", "th", "fr", "sa"];
       } else if (_config.type === "weekly") {
         numberOfRows = 8;
-        _state.weekDayOptions = ["", "", "", "", "", "", ""];
+        stateCopy.weekDayOptions = ["", "", "", "", "", "", ""];
       } else if (_config.type === "monthly") {
         numberOfRows = 4;
-        _state.weekDayOptions = ["", "", ""];
+        stateCopy.weekDayOptions = ["", "", ""];
       } else if (_config.type === "quarterly") {
         numberOfRows = 4;
-        _state.weekDayOptions = [""];
+        stateCopy.weekDayOptions = [""];
       }
 
       for (let dateRows = 0; dateRows < numberOfRows; dateRows++) {
@@ -933,7 +951,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
           type: _config.type!,
           monthStartWeekNumber,
           dateRows,
-          year: _state.selectedYear[side] as string,
+          year: stateCopy.selectedYear[side] as string,
           itemCount: null,
         };
 
@@ -952,7 +970,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
             dateRows,
             rowNumber,
             yearStartDate,
-            year: _state.selectedYear[side] as number,
+            year: stateCopy.selectedYear[side] as number,
             rowItem,
             columns,
           };
@@ -963,7 +981,13 @@ const DateTimeRangePicker: React.FC<Props> = ({
           rowOptions.itemCount = itemCount;
 
           const { available, inRange, active, today }: DateCharacteristics =
-            service.getDateCharacteristics(_config, _state, currentItemDate, calendarLabel, side);
+            service.getDateCharacteristics(
+              _config,
+              stateCopy,
+              currentItemDate,
+              calendarLabel,
+              side,
+            );
 
           const itemObj: ActiveItemSide = {
             date: currentItemDate,
@@ -977,7 +1001,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
           };
           if (service.isRowIemValid(rowOptions)) {
             if (active) {
-              _state.activeItem[side] = itemObj;
+              stateCopy.activeItem[side] = itemObj;
             }
             dateRowObj.items.push(itemObj);
           }
@@ -986,7 +1010,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
       }
     }
 
-    _state.calendarAvailable[side] = true;
+    stateCopy.calendarAvailable[side] = true;
 
     // generate month/year select
     setTimeout(() => {
@@ -1001,20 +1025,18 @@ const DateTimeRangePicker: React.FC<Props> = ({
         onChange: onCalendarLabelChange.bind(this),
         type: "month",
         items: dates.months!,
-        selected: _state.selectedMonth[side] as string,
+        selected: stateCopy.selectedMonth[side] as string,
       };
       printSelect(options);
 
       options.type = "year";
       options.items = dates.years;
-      options.selected = _state.selectedYear[side] as string;
+      options.selected = stateCopy.selectedYear[side] as string;
       printSelect(options);
     });
 
-    return {
-      dates,
-      state: _state,
-    };
+    stateCopy.dates[side] = dates;
+    return stateCopy;
   };
 
   const printSelect = (options: {
@@ -1212,19 +1234,17 @@ const DateTimeRangePicker: React.FC<Props> = ({
           onFocus={onFocusInput}
           onBlur={onBlurInput}
           disabled={config.componentDisabled}
-          autocomplete="off"
-          autocorrect="off"
-          readonly
+          autoComplete="off"
+          autoCorrect="off"
+          readOnly={true}
         />
       </div>
       {!!state.isCalendarVisible && (
         <Calendar
           config={config}
           state={state}
-          inputAs={InputTag}
           selectAs={selectAs}
           buttonAs={buttonAs}
-          itemCell={itemCell}
           service={service}
           generateCalendar={generateCalendar}
           dateRangeSelected={dateRangeSelected}

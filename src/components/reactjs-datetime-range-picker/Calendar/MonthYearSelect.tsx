@@ -13,12 +13,7 @@ interface Props {
   side: CALENDAR_SIDES;
   service: NgxDatetimeRangePickerService;
   selectAs?: SELECT_AS;
-  generateCalendar: (
-    state: State,
-    config: Config,
-    date: string,
-    side: CALENDAR_SIDES,
-  ) => { dates: DateSide; state: State };
+  generateCalendar: (state: State, config: Config, date: string, side: CALENDAR_SIDES) => State;
   setState: (state: State) => void;
   onCalendarLabelChange: (value: string, side: CALENDAR_SIDES, type: string) => void;
 }
@@ -40,9 +35,8 @@ const MonthYearSelect: React.FC<Props> = ({
       .endOf(type as unitOfTime.StartOf)
       .format(DEFAULT_DATE_FORMAT);
 
-    const generatedCalendar = generateCalendar(state, config, endDate, side);
-    state = generatedCalendar.state;
-    state.dates[side] = generatedCalendar.dates;
+    const generatedCalendarState = generateCalendar(state, config, endDate, side);
+    state = generatedCalendarState;
     setState(state);
   };
   const isPrevAvailable = (side: CALENDAR_SIDES): boolean => {
@@ -65,9 +59,8 @@ const MonthYearSelect: React.FC<Props> = ({
       .startOf(type as unitOfTime.StartOf)
       .format(DEFAULT_DATE_FORMAT);
 
-    const generatedCalendar = generateCalendar(state, config, startDate, side);
-    state = generatedCalendar.state;
-    state.dates[side] = generatedCalendar.dates;
+    const generatedCalendarState = generateCalendar(state, config, startDate, side);
+    state = generatedCalendarState;
     setState(state);
   };
   const isNextAvailable = (side: CALENDAR_SIDES): boolean => {
@@ -112,7 +105,7 @@ const MonthYearSelect: React.FC<Props> = ({
               <DTRPSelect
                 selectAs={selectAs}
                 options={(state.dates[side] as DateSide).months!}
-                selectedValue={state.selectedMonth[side]}
+                selectedValue={`${state.selectedMonth[side] as string}`}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   onCalendarLabelChange(e.target.value, side, "month");
                 }}
@@ -123,7 +116,7 @@ const MonthYearSelect: React.FC<Props> = ({
             <DTRPSelect
               selectAs={selectAs}
               options={(state.dates[side] as DateSide).years}
-              selectedValue={state.selectedYear[side]}
+              selectedValue={`${state.selectedYear[side] as string}`}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 onCalendarLabelChange(e.target.value, side, "year");
               }}

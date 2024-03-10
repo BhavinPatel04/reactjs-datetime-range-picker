@@ -1,9 +1,11 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import moment from "moment";
-import { DateTimeRangePicker } from "../index";
-import { type DateRangeModel, type Options, type Settings } from "../interfaces";
-import { NextUIProvider, Input, Button, Select, SelectItem } from "@nextui-org/react";
+import { ReactJSDatetimeRangePicker, DateRangeModel, Options, Settings } from "../../../../src";
+import { NextUIProvider } from "@nextui-org/system";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
+import { Select, SelectItem } from "@nextui-org/select";
 import { DatetimeRangeType } from "../enum";
 import "./assets/nextui.css";
 
@@ -12,7 +14,7 @@ const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
   title: "DateTimeRangePicker/NextUI",
-  component: DateTimeRangePicker,
+  component: ReactJSDatetimeRangePicker,
   decorators: [
     (Story) => (
       <NextUIProvider>
@@ -24,7 +26,7 @@ const meta = {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "centered",
   },
-} satisfies Meta<typeof DateTimeRangePicker>;
+} satisfies Meta<typeof ReactJSDatetimeRangePicker>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

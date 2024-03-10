@@ -1,12 +1,11 @@
 import React from "react";
 import { type SELECT_AS } from "../types";
 import { getSelectDefaultValue } from "../util";
-import { ActiveItemSide, DateSide, TimeSide } from "../interfaces";
 
 interface Props {
   selectAs?: SELECT_AS;
   options: any[];
-  selectedValue: DateSide | TimeSide | ActiveItemSide | string | boolean | number | undefined;
+  selectedValue: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
@@ -16,13 +15,22 @@ const DTRPSelect: React.FC<Props> = ({ selectAs, options, selectedValue, onChang
   const selectDefaultSelectedAttribute = selectAs?.selectedAttributeName ?? "value";
   const selectedAttributeValueType = selectAs?.selectedAttributeValueType ?? "string";
 
+  // const getSelectedTimeItemText = (item: string, side: CALENDAR_SIDES): string => {
+  //   if (item === "hour") {
+  //     return state.selectedHour[side] as string;
+  //   } else if (item === "minute") {
+  //     return state.selectedMinute[side] as string;
+  //   }
+  //   return "";
+  // };
+
   return (
     <SelectTag
       className="timeItem-select ngx-datetime-range-picker-select-panel timeItem-select-panel"
-      //   value={() => getSelectedTimeItemText(timeItem, side)}
+      // value={`${selectedValue as string}`}
       {...{
         [selectDefaultSelectedAttribute]: getSelectDefaultValue(
-          selectedValue as string,
+          selectedValue,
           selectedAttributeValueType,
         ),
       }}

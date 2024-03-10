@@ -17,13 +17,6 @@ interface Props {
 }
 
 const TimeSelect: React.FC<Props> = ({ state, config, selectAs, onTimeLabelChange }) => {
-  // const getSelectedTimeItemText = (item: string, side: CALENDAR_SIDES) => {
-  //   if (item === "hour") {
-  //     return state.selectedHour[side];
-  //   } else if (item === "minute") {
-  //     return state.selectedMinute[side];
-  //   }
-  // };
   return (
     <ul className="list-inline time-picker-container">
       {state.sides.map((side, idx) => (
@@ -38,7 +31,7 @@ const TimeSelect: React.FC<Props> = ({ state, config, selectAs, onTimeLabelChang
               <DTRPSelect
                 selectAs={selectAs}
                 options={(state.times[side] as TimeSide)[timeItem]}
-                selectedValue={state.selectedYear[side]}
+                selectedValue={`${state.selectedYear[side] as string}`}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   onTimeLabelChange(state, config, timeItem, side, e.target.value);
                 }}

@@ -1,5 +1,5 @@
 import React, { type ElementType } from "react";
-import { type Options, type State, type DateSide, type Config } from "../interfaces";
+import { type Options, type State, type Config } from "../interfaces";
 import { type CALENDAR_SIDES, type SELECT_AS, type TIME_ITEM } from "../types";
 import { type NgxDatetimeRangePickerService } from "../service";
 import TimezoneSelect from "./TimezoneSelect";
@@ -14,17 +14,10 @@ export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 interface Props {
   config: Config;
   state: State;
-  inputAs?: ElementType;
   selectAs?: SELECT_AS;
   buttonAs?: ElementType;
-  itemCell: React.MutableRefObject<any>;
   service: NgxDatetimeRangePickerService;
-  generateCalendar: (
-    state: State,
-    config: Config,
-    date: string,
-    side: CALENDAR_SIDES,
-  ) => { dates: DateSide; state: State };
+  generateCalendar: (state: State, config: Config, date: string, side: CALENDAR_SIDES) => State;
   dateRangeSelected: () => void;
   setState: (state: State) => void;
   updateInputField: (state: State, config: Config) => void;
@@ -45,10 +38,8 @@ interface Props {
 const Calendar: React.FC<Props> = ({
   config,
   state,
-  inputAs,
   selectAs,
   buttonAs,
-  itemCell,
   service,
   generateCalendar,
   dateRangeSelected,
@@ -71,7 +62,7 @@ const Calendar: React.FC<Props> = ({
           <ul className="list-inline calendar-container">
             {state.sides.map((side, idx) => (
               <li key={`calendar-${idx}`} className={`calendar ${side}`}>
-                <DateDisplay key={`calendar-${idx}`} state={state} side={side} inputAs={inputAs} />
+                <DateDisplay key={`calendar-${idx}`} state={state} side={side} />
                 <div className="calendar-table">
                   {state.calendarAvailable[side] && (
                     <div
@@ -94,7 +85,6 @@ const Calendar: React.FC<Props> = ({
                         config={config}
                         state={state}
                         side={side}
-                        itemCell={itemCell}
                         service={service}
                         setState={setState}
                         generateCalendar={generateCalendar}

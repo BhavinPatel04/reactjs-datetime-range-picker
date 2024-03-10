@@ -4,6 +4,8 @@ import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { EsLinter, linterPlugin, TypeScriptLinter } from "vite-plugin-linter";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 import * as packageJson from "./package.json";
 
 export default defineConfig((configEnv) => ({
@@ -18,7 +20,8 @@ export default defineConfig((configEnv) => ({
       ],
     }),
     dts({
-      include: ["src/components/"],
+      exclude: ["src/components/**/stories/"],
+      rollupTypes: true,
     }),
   ],
   build: {
@@ -27,7 +30,7 @@ export default defineConfig((configEnv) => ({
       name: "reactjs-datetime-range-picker",
       // formats: ['es', 'umd', 'cjs'],
       // fileName: (format) => `reactjs-datetime-range-picker.${format}.js`,
-      fileName: "reactjs-datetime-range-picker",
+      fileName: "index",
     },
     outDir: "dist",
     rollupOptions: {
@@ -39,6 +42,11 @@ export default defineConfig((configEnv) => ({
           react: "React",
         },
       },
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [tailwindcss, autoprefixer()],
     },
   },
 }));

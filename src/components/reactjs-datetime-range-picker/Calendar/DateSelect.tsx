@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import moment from "moment";
 import { type CALENDAR_SIDES } from "../types";
 import { type ActiveItemSide, type Config, type DateSide, type State } from "../interfaces";
@@ -11,15 +11,9 @@ interface Props {
   state: State;
   config: Config;
   side: CALENDAR_SIDES;
-  itemCell: React.MutableRefObject<any>;
   service: NgxDatetimeRangePickerService;
   setState: (state: State) => void;
-  generateCalendar: (
-    state: State,
-    config: Config,
-    date: string,
-    side: CALENDAR_SIDES,
-  ) => { dates: DateSide; state: State };
+  generateCalendar: (state: State, config: Config, date: string, side: CALENDAR_SIDES) => State;
   updateActiveItemInputField: (state: State, config: Config) => void;
   doApply: () => void;
 }
@@ -28,14 +22,15 @@ const DateSelect: React.FC<Props> = ({
   state,
   config,
   side,
-  itemCell,
   service,
   setState,
   generateCalendar,
   updateActiveItemInputField,
   doApply,
 }) => {
+  const itemCell = useRef<Record<string, HTMLTableCellElement | null>>({});
   const onCellClick = (item: ActiveItemSide, side: CALENDAR_SIDES): void => {
+    let internalState: State = cloneDeep(state) as State;
     const date: number = moment(item.date, DEFAULT_DATE_FORMAT).valueOf();
     const startDate: number = moment(config.startDate, DEFAULT_DATE_FORMAT).valueOf();
     const endDate: number = moment(config.endDate, DEFAULT_DATE_FORMAT).valueOf();
@@ -46,43 +41,44 @@ const DateSelect: React.FC<Props> = ({
       if (date < minDate || date > maxDate) {
         return;
       }
-      const generatedCalendar = generateCalendar(state, config, item.date!, side);
-      state = generatedCalendar.state;
-      state.dates[side] = generatedCalendar.dates;
-      setState(state);
+      const generatedCalendarState = generateCalendar(internalState, config, item.date!, side);
+      internalState = generatedCalendarState;
+      setState(internalState);
     }
 
     if (endDate || date < startDate) {
       config.endDate = "";
       config.startDate = item.date;
-      state.activeItem.left = item;
+      internalState.activeItem.left = item;
     } else if (!endDate && date < startDate) {
       config.endDate = cloneDeep(config.startDate!) as string;
-      state.activeItem.right = item;
+      internalState.activeItem.right = item;
     } else {
       config.endDate = item.date;
-      state.activeItem.right = item;
+      internalState.activeItem.right = item;
     }
 
     if (config.singleDatePicker) {
       config.endDate = cloneDeep(config.startDate!) as string;
-      state.activeItem.right = state.activeItem.left = item;
+      internalState.activeItem.right = internalState.activeItem.left = item;
     }
 
+    setState(internalState);
     doApply();
   };
 
-  const onCellMouseEnter = (item: ActiveItemSide, itemCell: React.MutableRefObject<any>): void => {
+  const onCellMouseEnter = (item: ActiveItemSide, itemCell: HTMLTableCellElement | null): void => {
     if (!item.available) {
       return;
     }
 
+    const internalState: State = cloneDeep(state) as State;
     const date: number = moment(item.date, DEFAULT_DATE_FORMAT).valueOf();
     const startDate: number = moment(config.startDate, DEFAULT_DATE_FORMAT).valueOf();
     const endDate: number = moment(config.endDate, DEFAULT_DATE_FORMAT).valueOf();
-    const hoverItemText: string = itemCell ? itemCell.current.innerText : "";
-    let hoverItemFirstDate: string = itemCell ? itemCell.current.getAttribute("firstday") : "";
-    let hoverItemLastDate: string = itemCell ? itemCell.current.getAttribute("lastday") : "";
+    const hoverItemText: string = itemCell ? itemCell.innerText : "";
+    let hoverItemFirstDate: string = itemCell ? itemCell?.getAttribute("data-firstday") ?? "" : "";
+    let hoverItemLastDate: string = itemCell ? itemCell?.getAttribute("data-lastday") ?? "" : "";
 
     hoverItemFirstDate = moment(hoverItemFirstDate, DEFAULT_DATE_FORMAT).format(
       config.viewDateFormat,
@@ -105,19 +101,21 @@ const DateSelect: React.FC<Props> = ({
             : moment(rowItem.date, DEFAULT_DATE_FORMAT).valueOf();
           if ((hoverItemDate > startDate && hoverItemDate < date) || date === hoverItemDate) {
             rowItem.inRange = true;
-            state.dateTitleText.right = activeItemInputFieldText;
+            internalState.dateTitleText.right = activeItemInputFieldText;
           }
         }
       };
 
-      service.iterateOverDateObj(state.dates, func.bind(this));
+      service.iterateOverDateObj(internalState.dates, func.bind(this));
     } else {
-      if (config.singleDatePicker) {
-        state.dateTitleText.right = activeItemInputFieldText;
-      } else {
-        state.dateTitleText.left = activeItemInputFieldText;
-      }
+      // if (config.singleDatePicker) {
+      //   internalState.dateTitleText.right = activeItemInputFieldText;
+      // } else {
+      //   internalState.dateTitleText.left = activeItemInputFieldText;
+      // }
+      internalState.dateTitleText[side] = activeItemInputFieldText;
     }
+    setState(internalState);
   };
 
   const onCellMouseLeave = (): void => {
@@ -144,15 +142,19 @@ const DateSelect: React.FC<Props> = ({
         </tr>
       </thead>
       <tbody>
-        {(state.dates[side] as DateSide).itemRows.map((row, idx) => (
-          <tr key={`tr-${idx}`}>
+        {(state.dates[side] as DateSide).itemRows.map((row, trIdx) => (
+          <tr key={`tr-${trIdx}`}>
             {config.showRowNumber && row.rowNumberText && (
               <td className="rowNumber">{row.rowNumberText}</td>
             )}
-            {row.items.map((item) => (
+            {row.items.map((item, tdIdx) => (
               <td
-                key={`td-${idx}`}
-                ref={itemCell}
+                key={`td-${trIdx}-${tdIdx}`}
+                ref={(el) => {
+                  if (itemCell.current) {
+                    itemCell.current[`td-${trIdx}-${tdIdx}`] = el;
+                  }
+                }}
                 data-firstday={item.firstDay}
                 data-lastday={item.lastDay}
                 className={`${item.available ? "available" : ""} ${
@@ -167,7 +169,7 @@ const DateSelect: React.FC<Props> = ({
                   onCellClick(item, side);
                 }}
                 onMouseOver={() => {
-                  onCellMouseEnter(item, itemCell);
+                  onCellMouseEnter(item, itemCell.current[`td-${trIdx}-${tdIdx}`]);
                 }}
                 onMouseLeave={() => {
                   onCellMouseLeave();

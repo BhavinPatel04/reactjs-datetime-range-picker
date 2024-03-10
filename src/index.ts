@@ -1,1 +1,1 @@
-export { DateTimeRangePicker as ReactJSDatetimeRangePicker } from './components'
+export * from "./components";
