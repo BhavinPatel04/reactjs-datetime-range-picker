@@ -4,13 +4,13 @@
   "private": false,
   "version": "0.0.4",
   "homepage": "https://github.com/BhavinPatel04/reactjs-datetime-range-picker#readme",
-  "main": "./dist/reactjs-datetime-range-picker.umd.cjs",
-  "module": "./dist/reactjs-datetime-range-picker.js",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
   "type": "module",
   "scripts": {
     "build": "yarn clean && tsc && vite build",
     "build-storybook": "storybook build",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist storybook-static",
     "eslint": "eslint",
     "format": "prettier --write src//**/*.{ts,tsx,css} --config ./.prettierrc",
     "generate-css": "lessc src/components/reactjs-datetime-range-picker/DateTimeRangePicker.less src/components/reactjs-datetime-range-picker/DateTimeRangePicker.css",
@@ -19,7 +19,6 @@
     "preview": "vite preview",
     "prepublishOnly": "yarn build",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build",
     "test": "test",
     "tsc": "tsc"
   },
@@ -35,6 +34,17 @@
   "bugs": {
     "url": "https://github.com/BhavinPatel04/reactjs-datetime-range-picker/issues"
   },
+  "files": [
+    "@types",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -42,19 +52,9 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
-      "yarn  eslint",
-      "yarn  format"
+      "yarn eslint",
+      "yarn format"
     ]
-  },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": {
-      "import": "./dist/reactjs-datetime-range-picker.js",
-      "require": "./dist/reactjs-datetime-range-picker.umd.cjs"
-    },
-    "./dist/style.css": "./dist/style.css"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.6.17",

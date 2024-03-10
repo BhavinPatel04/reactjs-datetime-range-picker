@@ -20,6 +20,7 @@ export default defineConfig((configEnv) => ({
       ],
     }),
     dts({
+      include: ["src/"],
       exclude: ["src/components/**/stories/"],
       rollupTypes: true,
     }),

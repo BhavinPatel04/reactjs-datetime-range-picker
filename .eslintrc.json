@@ -30,6 +30,7 @@
       "typescript": {}
     }
   },
+  "ignorePatterns": ["storybook-static"],
   "rules": {
     "@typescript-eslint/consistent-type-assertions": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
