@@ -18,4 +18,4 @@ jobs:
         with:
           path: "./storybook-static"
           install_command: yarn install
-          build_command: yarn build-storybook
+          build_command: yarn build && yarn build-storybook

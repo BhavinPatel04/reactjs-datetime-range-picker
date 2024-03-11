@@ -33,12 +33,9 @@ export default defineConfig((configEnv) => ({
       // fileName: (format) => `reactjs-datetime-range-picker.${format}.js`,
       fileName: "index",
     },
-    outDir: "dist",
     rollupOptions: {
-      external: [...Object.keys(packageJson.peerDependencies)],
-      input: "./dist/index.d.ts",
+      external: [...Object.keys(packageJson.peerDependencies), /^node:.*/],
       output: {
-        file: "dist/index.d.ts",
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
