@@ -1,7 +1,13 @@
-name: Publish Package to NPM
+name: Publish package to NPM & storybook
 on:
   release:
     types: [published]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,9 +16,17 @@ jobs:
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
       - run: yarn && yarn build
       - run: npm publish --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.2
+        with:
+          path: "./storybook-static"
+          install_command: yarn install
+          build_command: yarn build-storybook

@@ -8443,6 +8443,19 @@ react@^18.2.0:
   dependencies:
     loose-envify "^1.1.0"
 
+reactjs-datetime-range-picker@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/reactjs-datetime-range-picker/-/reactjs-datetime-range-picker-0.0.5.tgz#8941ba769352cbf5088fa9704167e8832ab65bee"
+  integrity sha512-xjmrGbs6Ahj55p5SCO5r5KdKpz0dKD93rwYeFPlxdUbHA3USBzNWsjfzlhNBSHOpWYuVeuylTL7VHCBozH3qSw==
+  dependencies:
+    "@nextui-org/button" "^2.0.27"
+    "@nextui-org/input" "^2.1.17"
+    "@nextui-org/select" "^2.1.21"
+    "@nextui-org/system" "^2.0.15"
+    "@nextui-org/theme" "^2.1.18"
+    framer-motion "^11.0.8"
+    global "^4.4.0"
+
 read-cache@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/read-cache/-/read-cache-1.0.0.tgz#e664ef31161166c9751cdbe8dbcf86b5fb58f774"
