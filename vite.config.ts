@@ -36,7 +36,9 @@ export default defineConfig((configEnv) => ({
     outDir: "dist",
     rollupOptions: {
       external: [...Object.keys(packageJson.peerDependencies)],
+      input: "./dist/index.d.ts",
       output: {
+        file: "dist/index.d.ts",
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
