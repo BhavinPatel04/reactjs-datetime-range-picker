@@ -8443,10 +8443,10 @@ react@^18.2.0:
   dependencies:
     loose-envify "^1.1.0"
 
-reactjs-datetime-range-picker@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/reactjs-datetime-range-picker/-/reactjs-datetime-range-picker-0.0.5.tgz#8941ba769352cbf5088fa9704167e8832ab65bee"
-  integrity sha512-xjmrGbs6Ahj55p5SCO5r5KdKpz0dKD93rwYeFPlxdUbHA3USBzNWsjfzlhNBSHOpWYuVeuylTL7VHCBozH3qSw==
+reactjs-datetime-range-picker@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/reactjs-datetime-range-picker/-/reactjs-datetime-range-picker-0.0.6.tgz#e35cfb07d94fc812baec3728f22a407f95b0c15e"
+  integrity sha512-TaKzWjkcKUZ8bPi0813ZTb7/62MXSI+QYEJWVD96BrdwKTpdXCWfifbQ+gbtvcu27TalVgQMeZRrEde7Xlc2Dw==
   dependencies:
     "@nextui-org/button" "^2.0.27"
     "@nextui-org/input" "^2.1.17"
