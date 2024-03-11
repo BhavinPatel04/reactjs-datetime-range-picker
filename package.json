@@ -2,7 +2,7 @@
   "name": "reactjs-datetime-range-picker",
   "description": "ReactJS datetime range picker with daily, weekly, monthly, quarterly &amp; yearly levels",
   "private": false,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/BhavinPatel04/reactjs-datetime-range-picker#readme",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
