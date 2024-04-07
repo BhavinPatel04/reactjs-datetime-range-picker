@@ -28,7 +28,22 @@
     "url": "git+ssh://git@github.com/BhavinPatel04/reactjs-datetime-range-picker.git"
   },
   "keywords": [
-    "reactjs-datetime-range-picker"
+    "react",
+    "reactjs",
+    "react-datetime-range-picker",
+    "reactjs-datetime-range-picker",
+    "datetime-range-picker",
+    "datetime-range",
+    "datetime",
+    "date-time-range-picker",
+    "date-time-range",
+    "date-time",
+    "date-range-picker",
+    "date-range",
+    "date",
+    "time-range-picker",
+    "time-range",
+    "time"
   ],
   "author": "Bhavin Patel",
   "license": "MIT",
