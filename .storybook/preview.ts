@@ -1,13 +1,20 @@
 import type { Preview } from "@storybook/react";
+import { DatetimeRangeType } from "../src";
 
 const preview: Preview = {
-  parameters: {
-    actions: { argTypesRegex: "^on[A-Z].*" },
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
+  argTypes: {
+    type: {
+      control: "select",
+      options: [
+        DatetimeRangeType.daily,
+        DatetimeRangeType.weekly,
+        DatetimeRangeType.monthly,
+        DatetimeRangeType.quarterly,
+        DatetimeRangeType.yearly,
+      ],
+    },
+    dateArray: {
+      control: "array",
     },
   },
 };

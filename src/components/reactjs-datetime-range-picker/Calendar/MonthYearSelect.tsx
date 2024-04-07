@@ -3,17 +3,15 @@ import moment, { type DurationInputArg1, type DurationInputArg2, type unitOfTime
 import { type CALENDAR_SIDES, type SELECT_AS } from "../types";
 import { DEFAULT_DATE_FORMAT } from "../constants";
 import { type Config, type DateSide, type State } from "../interfaces";
-import { type NgxDatetimeRangePickerService } from "../service";
 import { DatetimeRangeType } from "../enum";
-import DTRPSelect from "./Select";
+import { generateCalendar, getLabelProps } from "../util";
+import DTRPSelect from "./DTRPSelect";
 
 interface Props {
   state: State;
   config: Config;
   side: CALENDAR_SIDES;
-  service: NgxDatetimeRangePickerService;
   selectAs?: SELECT_AS;
-  generateCalendar: (state: State, config: Config, date: string, side: CALENDAR_SIDES) => State;
   setState: (state: State) => void;
   onCalendarLabelChange: (value: string, side: CALENDAR_SIDES, type: string) => void;
 }
@@ -22,25 +20,23 @@ const MonthYearSelect: React.FC<Props> = ({
   state,
   config,
   side,
-  service,
   selectAs,
-  generateCalendar,
   setState,
   onCalendarLabelChange,
 }) => {
   const onClickNext = (side: CALENDAR_SIDES): void => {
-    const { label, labelFormat, type } = service.getLabelProps(state, config.type!, side);
+    const { label, labelFormat, type } = getLabelProps(state, config.type, side);
     const endDate = moment(label, labelFormat)
       .add(1 as DurationInputArg1, type as DurationInputArg2)
       .endOf(type as unitOfTime.StartOf)
       .format(DEFAULT_DATE_FORMAT);
 
     const generatedCalendarState = generateCalendar(state, config, endDate, side);
-    state = generatedCalendarState;
-    setState(state);
+    const _state = generatedCalendarState;
+    setState(_state);
   };
   const isPrevAvailable = (side: CALENDAR_SIDES): boolean => {
-    const { label, labelFormat, type } = service.getLabelProps(state, config.type!, side);
+    const { label, labelFormat, type } = getLabelProps(state, config.type, side);
 
     return (
       moment(label, labelFormat)
@@ -53,7 +49,7 @@ const MonthYearSelect: React.FC<Props> = ({
   };
 
   const onClickPrevious = (side: CALENDAR_SIDES): void => {
-    const { label, labelFormat, type } = service.getLabelProps(state, config.type!, side);
+    const { label, labelFormat, type } = getLabelProps(state, config.type, side);
     const startDate = moment(label, labelFormat)
       .subtract(1 as DurationInputArg1, type as DurationInputArg2)
       .startOf(type as unitOfTime.StartOf)
@@ -64,7 +60,7 @@ const MonthYearSelect: React.FC<Props> = ({
     setState(state);
   };
   const isNextAvailable = (side: CALENDAR_SIDES): boolean => {
-    const { label, labelFormat, type } = service.getLabelProps(state, config.type!, side);
+    const { label, labelFormat, type } = getLabelProps(state, config.type, side);
 
     return (
       moment(label, labelFormat)
@@ -103,8 +99,9 @@ const MonthYearSelect: React.FC<Props> = ({
           {config.type === DatetimeRangeType.daily && (
             <div className="date-dropdown ngx-datetime-range-picker-select-panel month-select-panel">
               <DTRPSelect
+                classes="month-select"
                 selectAs={selectAs}
-                options={(state.dates[side] as DateSide).months!}
+                options={(state.dates[side] as DateSide).months}
                 selectedValue={`${state.selectedMonth[side] as string}`}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   onCalendarLabelChange(e.target.value, side, "month");
@@ -114,6 +111,7 @@ const MonthYearSelect: React.FC<Props> = ({
           )}
           <div className="date-dropdown ngx-datetime-range-picker-select-panel year-select-panel">
             <DTRPSelect
+              classes="year-select"
               selectAs={selectAs}
               options={(state.dates[side] as DateSide).years}
               selectedValue={`${state.selectedYear[side] as string}`}

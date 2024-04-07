@@ -1,7 +1,6 @@
-import React, { type ElementType } from "react";
-import { type Options, type State, type Config } from "../interfaces";
-import { type CALENDAR_SIDES, type SELECT_AS, type TIME_ITEM } from "../types";
-import { type NgxDatetimeRangePickerService } from "../service";
+import React from "react";
+import { type State, type Config } from "../interfaces";
+import { BUTTON_AS, type CALENDAR_SIDES, type SELECT_AS, type TIME_ITEM } from "../types";
 import TimezoneSelect from "./TimezoneSelect";
 import DateDisplay from "./DateDisplay";
 import MonthYearSelect from "./MonthYearSelect";
@@ -9,22 +8,30 @@ import DateSelect from "./DateSelect";
 import TimeSelect from "./TimeSelect";
 import Actions from "./Actions";
 
-export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
-
 interface Props {
   config: Config;
   state: State;
   selectAs?: SELECT_AS;
-  buttonAs?: ElementType;
-  service: NgxDatetimeRangePickerService;
-  generateCalendar: (state: State, config: Config, date: string, side: CALENDAR_SIDES) => State;
-  dateRangeSelected: () => void;
+  buttonAs?: BUTTON_AS;
+  dateRangeSelected: (state: State, config: Config) => void;
   setState: (state: State) => void;
+  setConfig: (config: Config) => void;
   updateInputField: (state: State, config: Config) => void;
-  doApply: () => void;
+  doApply: (
+    state: State,
+    config: Config,
+  ) => {
+    state: State;
+    config: Config;
+  };
+  handleDateChange: (
+    state: State,
+    config: Config,
+  ) => {
+    _state: State;
+    _config: Config;
+  };
   updateActiveItemInputField: (state: State, config: Config) => void;
-  updateRange: (_config: Config, _state: State, rangeLabel: string, options: Options) => State;
-  updateActiveItem: (config: Config, state: State) => State;
   onCalendarLabelChange: (label: string, side: CALENDAR_SIDES, type: string) => void;
   onTimeLabelChange: (
     state: State,
@@ -40,15 +47,13 @@ const Calendar: React.FC<Props> = ({
   state,
   selectAs,
   buttonAs,
-  service,
-  generateCalendar,
   dateRangeSelected,
   setState,
+  setConfig,
   updateInputField,
   doApply,
+  handleDateChange,
   updateActiveItemInputField,
-  updateRange,
-  updateActiveItem,
   onCalendarLabelChange,
   onTimeLabelChange,
 }) => {
@@ -57,12 +62,13 @@ const Calendar: React.FC<Props> = ({
       <div className="date-select">
         <div style={{ position: "relative" }}>
           {!!config.timezoneSupport && (
-            <TimezoneSelect state={state} config={config} service={service} setState={setState} />
+            <TimezoneSelect state={state} config={config} setState={setState} />
           )}
           <ul className="list-inline calendar-container">
             {state.sides.map((side, idx) => (
               <li key={`calendar-${idx}`} className={`calendar ${side}`}>
                 <DateDisplay key={`calendar-${idx}`} state={state} side={side} />
+                <div className="divider"></div>
                 <div className="calendar-table">
                   {state.calendarAvailable[side] && (
                     <div
@@ -75,8 +81,6 @@ const Calendar: React.FC<Props> = ({
                         state={state}
                         side={side}
                         selectAs={selectAs}
-                        service={service}
-                        generateCalendar={generateCalendar}
                         onCalendarLabelChange={onCalendarLabelChange}
                         setState={setState}
                       />
@@ -85,26 +89,30 @@ const Calendar: React.FC<Props> = ({
                         config={config}
                         state={state}
                         side={side}
-                        service={service}
                         setState={setState}
-                        generateCalendar={generateCalendar}
-                        doApply={doApply}
+                        setConfig={setConfig}
+                        handleDateChange={handleDateChange}
                         updateActiveItemInputField={updateActiveItemInputField}
                       />
                     </div>
                   )}
                 </div>
+                {config.timePicker && (
+                  <div className="time-picker-container">
+                    <div className="divider"></div>
+                    <TimeSelect
+                      key={`time-select-${idx}`}
+                      state={state}
+                      side={side}
+                      config={config}
+                      selectAs={selectAs}
+                      onTimeLabelChange={onTimeLabelChange}
+                    />
+                  </div>
+                )}
               </li>
             ))}
           </ul>
-          {config.timePicker && (
-            <TimeSelect
-              state={state}
-              config={config}
-              selectAs={selectAs}
-              onTimeLabelChange={onTimeLabelChange}
-            />
-          )}
         </div>
         {((!config.singleDatePicker && config.showRanges) ?? config.timePicker) && (
           <Actions
@@ -112,9 +120,8 @@ const Calendar: React.FC<Props> = ({
             state={state}
             buttonAs={buttonAs}
             setState={setState}
-            updateActiveItem={updateActiveItem}
+            setConfig={setConfig}
             updateInputField={updateInputField}
-            updateRange={updateRange}
             dateRangeSelected={dateRangeSelected}
             doApply={doApply}
           />

@@ -15,7 +15,7 @@ export interface AriaLabelsOptions {
 
 export interface DateSide {
   label: string;
-  months: string[] | undefined;
+  months: string[];
   years: string[];
   itemRows: DateRow[];
 }
@@ -96,7 +96,7 @@ export interface State {
 }
 
 export interface Settings {
-  type?: DATETIME_RANGE_TYPE;
+  type: DATETIME_RANGE_TYPE;
   modelKeys?: string[];
   useLocalTimezone?: boolean;
   showTimezoneSelect?: boolean;
@@ -116,7 +116,6 @@ export interface Settings {
   showRanges?: boolean;
   disableWeekends?: boolean;
   disableWeekdays?: boolean;
-  retailCalendar?: boolean;
   displayBeginDate?: boolean;
   displayEndDate?: boolean;
   ariaLabels?: AriaLabelsOptions;

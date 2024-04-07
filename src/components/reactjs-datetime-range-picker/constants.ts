@@ -8,6 +8,7 @@ import {
   type State,
 } from "./interfaces";
 import { type DATETIME_RANGE_TYPE, type TZ_MAP, type TZ_MAP_KEYS } from "./types";
+const USA_EST_TZ_CODE: TZ_MAP_KEYS = "EST";
 const USA_MST_TZ_CODE: TZ_MAP_KEYS = "MST";
 const USA_TZ_CODE: TZ_MAP_KEYS = "PST";
 const EU_TZ_CODE: TZ_MAP_KEYS = "CET";
@@ -23,6 +24,8 @@ function getLocalTimezone(): TZ_MAP_KEYS {
 }
 
 export const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
+export const DEFAULT_MIN_TIME = "00:00";
+export const DEFAULT_MAX_TIME = "23:59";
 
 export const NgxDatetimeRangePickerConstants = {
   DEFAULT: {
@@ -32,8 +35,10 @@ export const NgxDatetimeRangePickerConstants = {
       endDate: moment().format("YYYY-MM-DD"),
       minDate: moment().subtract(2, "year").startOf("year").format("YYYY-MM-DD"),
       maxDate: moment().format("YYYY-MM-DD"),
-      startTime: "00:00",
-      endTime: "23:59",
+      startTime: DEFAULT_MIN_TIME,
+      endTime: DEFAULT_MAX_TIME,
+      minTime: DEFAULT_MIN_TIME,
+      maxTime: DEFAULT_MAX_TIME,
     } as Options,
     SETTINGS: {
       type: "daily",
@@ -53,7 +58,6 @@ export const NgxDatetimeRangePickerConstants = {
       showRanges: true,
       disableWeekends: false,
       disableWeekdays: false,
-      retailCalendar: false,
       displayBeginDate: false,
       displayEndDate: false,
       ariaLabels: {
@@ -88,25 +92,25 @@ export const NgxDatetimeRangePickerConstants = {
       localTimezone: getLocalTimezone(),
       selectedDateText: "",
       selectedHour: {
-        left: "",
-        right: "",
+        left: moment().format("hh"),
+        right: moment().format("hh"),
       },
       selectedMeridian: {
         left: "",
         right: "",
       },
       selectedMinute: {
-        left: "",
-        right: "",
+        left: moment().format("mm"),
+        right: moment().format("mm"),
       },
       selectedMonth: {
-        left: "",
-        right: "",
+        left: moment().format("MMM"),
+        right: moment().format("MMM"),
       },
       selectedTimezone: "PST", // Since "useLocalTimezone: false" by default;
       selectedYear: {
-        left: "",
-        right: "",
+        left: moment().format("YYYY"),
+        right: moment().format("YYYY"),
       },
       sides: [],
       timeItems: ["hour", "minute"],
@@ -114,7 +118,7 @@ export const NgxDatetimeRangePickerConstants = {
         left: "",
         right: "",
       },
-      timeZones: [USA_TZ_CODE, EU_TZ_CODE],
+      timeZones: [USA_EST_TZ_CODE, USA_MST_TZ_CODE, USA_TZ_CODE, EU_TZ_CODE],
       todayTime: "",
       weekDayOptions: ["su", "mo", "tu", "we", "th", "fr", "sa"],
     } satisfies State,
@@ -165,6 +169,7 @@ export const NgxDatetimeRangePickerConstants = {
       quarterly: "quarter",
       yearly: "year",
     } as Record<DATETIME_RANGE_TYPE, string>,
+    USA_EST_TZ_CODE,
     USA_MST_TZ_CODE,
     USA_TZ_CODE,
     EU_TZ_CODE,

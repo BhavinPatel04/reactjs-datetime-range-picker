@@ -5,3 +5,8 @@ export enum DatetimeRangeType {
   quarterly = "quarterly",
   yearly = "yearly",
 }
+
+export enum InputFocusBlur {
+  focus = 1,
+  blur = 2,
+}

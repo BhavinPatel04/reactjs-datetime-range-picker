@@ -8,6 +8,9 @@ This plugin uses bootstrap and moment.js. This plugin can render the components 
 ## Demo
 [Storybook demo](https://bhavinpatel04.github.io/reactjs-datetime-range-picker/)
 
+## Angular Version
+[ngx-datetime-range-picker](https://github.com/BhavinPatel04/ngx-datetime-range-picker)
+
 ## Installation
 #### Install the plugin:
 ```
@@ -99,9 +102,25 @@ const SomeComponent: React.FC<Props> = ({}) => {
     ...
     <ReactJSDatetimeRangePicker
       canBeEmpty={false}
-      dateRangeModel={dateRangeModel}
-      options={options}
-      settings={settings}
+      dateRangeModel={{
+        daily: {
+          endDate: '2024-03-23',
+          startDate: '2024-03-23'
+        },
+        weekly: {
+          endDate: '2024-03-23',
+          startDate: '2024-03-17'
+        }
+      }}
+      
+      displayEndDate={true}
+      inputDateFormat="YYYY-MM-DD"
+      label="Date"
+      placeholder="Date"
+      showRowNumber
+      singleDatePicker
+      type="daily"
+      viewDateFormat="MMM D, YYYY"
       inputAs={Input}
       selectAs={selectAs}
       buttonAs={Button}
@@ -114,23 +133,9 @@ const SomeComponent: React.FC<Props> = ({}) => {
 }
 ```
 
-## Options
+## Properties
 
-| Option    | Type   | Description                                 |
-| --------- | ------ | ------------------------------------------- |
-| dateArray | Array  | Only the dates in the array will be enabled |
-| startDate | string | Start date                                  |
-| endDate   | string | End date                                    |
-| minDate   | string | Min date                                    |
-| maxDate   | string | Max date                                    |
-| startTime | string | Start time (only for timepicker)            |
-| endTime   | string | End time (only for timepicker)              |
-| minTime   | string | Min time (only for timepicker)              |
-| maxTime   | string | Max time (only for timepicker)              |
-
-## Settings
-
-| Setting           | Type    | Default                                                                                                               | Description                                               |
+| Property          | Type    | Default                                                                                                               | Description                                               |
 | ----------------- | ------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | type              | string  | 'daily'                                                                                                               | type (daily                                               | weekly | monthly | quarterly | yearly) |
 | timePicker        | boolean | false                                                                                                                 | enable/disable timepicker                                 |
@@ -147,6 +152,15 @@ const SomeComponent: React.FC<Props> = ({}) => {
 | disableWeekdays   | boolean | false                                                                                                                 | enable/disable weekdays                                   |
 | displayBeginDate  | boolean | false                                                                                                                 | show begin date in input                                  |
 | displayEndDate    | boolean | false                                                                                                                 | show end date in input                                    |
+| dateArray         | Array   | []                                                                                                                    | Only the dates in the array will be enabled               |
+| startDate         | string  | Today's date                                                                                                          | Start date                                                |
+| endDate           | string  | Today's date                                                                                                          | End date                                                  |
+| minDate           | string  | Current Year - 2                                                                                                      | Min date                                                  |
+| maxDate           | string  | Today's date                                                                                                          | Max date                                                  |
+| startTime         | string  | "00:00"                                                                                                               | Start time (only for timepicker)                          |
+| endTime           | string  | "23:59"                                                                                                               | End time (only for timepicker)                            |
+| minTime           | string  |                                                                                                                       | Min time (only for timepicker)                            |
+| maxTime           | string  |                                                                                                                       | Max time (only for timepicker)                            |
 
 ## [License](https://github.com/BhavinPatel04/ngx-datetime-range-picker/blob/master/LICENSE)
 

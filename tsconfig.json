@@ -121,7 +121,8 @@
     "postcss.config.ts",
     "tailwind.config.ts",
     "vite.config.ts",
-    "storybook-static"
+    "storybook-static",
+    "src/components/reactjs-datetime-range-picker/Calendar/DTRPSelect/.tsx"
   ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "ts-node": {

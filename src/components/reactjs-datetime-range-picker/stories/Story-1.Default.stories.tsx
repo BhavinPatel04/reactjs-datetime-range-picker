@@ -1,31 +1,18 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { fn } from "@storybook/test";
 import moment from "moment";
-import { ReactJSDatetimeRangePicker, DateRangeModel, Options, Settings } from "../../../../src";
-import { NextUIProvider } from "@nextui-org/system";
-import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
-import { Select, SelectItem } from "@nextui-org/select";
+import { ReactJSDatetimeRangePicker, DateRangeModel, Options } from "../../..";
 import { DatetimeRangeType } from "../enum";
-import "./assets/nextui.css";
 
 const DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-  title: "DateTimeRangePicker/NextUI",
+  title: "DateTimeRangePicker/Default",
+  tags: ["autodocs"],
   component: ReactJSDatetimeRangePicker,
-  decorators: [
-    (Story) => (
-      <NextUIProvider>
-        <Story />
-      </NextUIProvider>
-    ),
-  ],
-  parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-    layout: "centered",
-  },
+  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof ReactJSDatetimeRangePicker>;
 
 export default meta;
@@ -45,27 +32,48 @@ export const Date: Story = {
         endDate: moment().format(DEFAULT_DATE_FORMAT),
       } as Options,
     } as DateRangeModel,
-    settings: {
-      singleDatePicker: true,
-      displayEndDate: true,
-      retailCalendar: false,
-      timezoneSupport: false,
-      type: DatetimeRangeType.daily,
-      viewDateFormat: "MMM D, YYYY",
-      label: "Date",
-      placeholder: "Date",
-      inputDateFormat: "YYYY-MM-DD",
-      showRowNumber: true,
-    } as Settings,
-    options: {},
-    inputAs: Input,
-    selectAs: {
-      tag: Select,
-      optionTag: SelectItem,
-      selectedAttributeName: "defaultSelectedKeys",
-      selectedAttributeValueType: "array",
-    },
-    buttonAs: Button,
+    singleDatePicker: true,
+    displayEndDate: true,
+    type: DatetimeRangeType.daily,
+    viewDateFormat: "MMM D, YYYY",
+    label: "Date",
+    placeholder: "Date",
+    inputDateFormat: "YYYY-MM-DD",
+    showRowNumber: true,
+    dateRangeModelChange: fn(),
+    onSelectedDate: fn(),
+    dateRangeChanged: fn(),
+    inputFocusBlur: fn(),
+  },
+};
+
+export const DateTimezone: Story = {
+  args: {
+    canBeEmpty: false,
+    dateRangeModel: {
+      daily: {
+        startDate: moment().format(DEFAULT_DATE_FORMAT),
+        endDate: moment().format(DEFAULT_DATE_FORMAT),
+      },
+      weekly: {
+        startDate: moment().subtract(6, "days").format(DEFAULT_DATE_FORMAT),
+        endDate: moment().format(DEFAULT_DATE_FORMAT),
+      } as Options,
+    } as DateRangeModel,
+    singleDatePicker: true,
+    displayEndDate: true,
+    timePicker: true,
+    timezoneSupport: true,
+    type: DatetimeRangeType.daily,
+    viewDateFormat: "MMM D, YYYY",
+    label: "Date",
+    placeholder: "Date",
+    inputDateFormat: "YYYY-MM-DD",
+    showRowNumber: true,
+    dateRangeModelChange: fn(),
+    onSelectedDate: fn(),
+    dateRangeChanged: fn(),
+    inputFocusBlur: fn(),
   },
 };
 
@@ -82,24 +90,16 @@ export const DateRange: Story = {
         endDate: moment().format(DEFAULT_DATE_FORMAT),
       } as Options,
     } as DateRangeModel,
-    settings: {
-      retailCalendar: false,
-      timezoneSupport: false,
-      type: DatetimeRangeType.weekly,
-      viewDateFormat: "MMM D, YYYY",
-      label: "Date Range",
-      placeholder: "Date Range",
-      inputDateFormat: "YYYY-MM-DD",
-    } as Settings,
-    options: {},
-    inputAs: Input,
-    selectAs: {
-      tag: Select,
-      optionTag: SelectItem,
-      selectedAttributeName: "defaultSelectedKeys",
-      selectedAttributeValueType: "array",
-    },
-    buttonAs: Button,
+    timezoneSupport: false,
+    type: DatetimeRangeType.daily,
+    viewDateFormat: "MMM D, YYYY",
+    label: "Date Range",
+    placeholder: "Date Range",
+    inputDateFormat: "YYYY-MM-DD",
+    dateRangeModelChange: fn(),
+    onSelectedDate: fn(),
+    dateRangeChanged: fn(),
+    inputFocusBlur: fn(),
   },
 };
 
@@ -126,24 +126,16 @@ export const DateArrayRange: Story = {
         maxDate: moment().format(DEFAULT_DATE_FORMAT),
       } as Options,
     } as DateRangeModel,
-    settings: {
-      retailCalendar: false,
-      timezoneSupport: false,
-      type: DatetimeRangeType.daily,
-      viewDateFormat: "MMM D, YYYY",
-      label: "Date Array Range",
-      placeholder: "Date Array Range",
-      inputDateFormat: "YYYY-MM-DD",
-    } as Settings,
-    options: {},
-    inputAs: Input,
-    selectAs: {
-      tag: Select,
-      optionTag: SelectItem,
-      selectedAttributeName: "defaultSelectedKeys",
-      selectedAttributeValueType: "array",
-    },
-    buttonAs: Button,
+    timezoneSupport: false,
+    type: DatetimeRangeType.daily,
+    viewDateFormat: "MMM D, YYYY",
+    label: "Date Array Range",
+    placeholder: "Date Array Range",
+    inputDateFormat: "YYYY-MM-DD",
+    dateRangeModelChange: fn(),
+    onSelectedDate: fn(),
+    dateRangeChanged: fn(),
+    inputFocusBlur: fn(),
   },
 };
 
@@ -160,24 +152,16 @@ export const DateTimeRange: Story = {
         endTime: "18:00",
       } as Options,
     } as DateRangeModel,
-    settings: {
-      retailCalendar: false,
-      timezoneSupport: false,
-      timePicker: true,
-      type: DatetimeRangeType.daily,
-      viewDateFormat: "MMM D, YYYY",
-      label: "Date Time Range",
-      placeholder: "Date Time Range",
-      inputDateFormat: "YYYY-MM-DD",
-    } as Settings,
-    options: {},
-    inputAs: Input,
-    selectAs: {
-      tag: Select,
-      optionTag: SelectItem,
-      selectedAttributeName: "defaultSelectedKeys",
-      selectedAttributeValueType: "array",
-    },
-    buttonAs: Button,
+    timezoneSupport: false,
+    timePicker: true,
+    type: DatetimeRangeType.daily,
+    viewDateFormat: "MMM D, YYYY",
+    label: "Date Time Range",
+    placeholder: "Date Time Range",
+    inputDateFormat: "YYYY-MM-DD",
+    dateRangeModelChange: fn(),
+    onSelectedDate: fn(),
+    dateRangeChanged: fn(),
+    inputFocusBlur: fn(),
   },
 };

@@ -2,69 +2,84 @@ import React, { useRef } from "react";
 import moment from "moment";
 import { type CALENDAR_SIDES } from "../types";
 import { type ActiveItemSide, type Config, type DateSide, type State } from "../interfaces";
-import { type NgxDatetimeRangePickerService } from "../service";
 import { DEFAULT_DATE_FORMAT } from "../constants";
-import { cloneDeep } from "../util";
+import { cloneDeep, generateCalendar, iterateOverDateObj } from "../util";
 import { DatetimeRangeType } from "../enum";
 
 interface Props {
   state: State;
   config: Config;
   side: CALENDAR_SIDES;
-  service: NgxDatetimeRangePickerService;
   setState: (state: State) => void;
-  generateCalendar: (state: State, config: Config, date: string, side: CALENDAR_SIDES) => State;
+  setConfig: (config: Config) => void;
+  handleDateChange: (
+    state: State,
+    config: Config,
+  ) => {
+    _state: State;
+    _config: Config;
+  };
   updateActiveItemInputField: (state: State, config: Config) => void;
-  doApply: () => void;
 }
 
 const DateSelect: React.FC<Props> = ({
   state,
   config,
   side,
-  service,
   setState,
-  generateCalendar,
+  setConfig,
+  handleDateChange,
   updateActiveItemInputField,
-  doApply,
 }) => {
   const itemCell = useRef<Record<string, HTMLTableCellElement | null>>({});
   const onCellClick = (item: ActiveItemSide, side: CALENDAR_SIDES): void => {
     let internalState: State = cloneDeep(state) as State;
+    let internalConfig: Config = cloneDeep(config) as Config;
     const date: number = moment(item.date, DEFAULT_DATE_FORMAT).valueOf();
-    const startDate: number = moment(config.startDate, DEFAULT_DATE_FORMAT).valueOf();
-    const endDate: number = moment(config.endDate, DEFAULT_DATE_FORMAT).valueOf();
-    const minDate: number = moment(config.minDate, DEFAULT_DATE_FORMAT).valueOf();
-    const maxDate: number = moment(config.maxDate, DEFAULT_DATE_FORMAT).valueOf();
+    const startDate: number = moment(internalConfig.startDate, DEFAULT_DATE_FORMAT).valueOf();
+    const endDate: number = moment(internalConfig.endDate, DEFAULT_DATE_FORMAT).valueOf();
+    const minDate: number = moment(internalConfig.minDate, DEFAULT_DATE_FORMAT).valueOf();
+    const maxDate: number = moment(internalConfig.maxDate, DEFAULT_DATE_FORMAT).valueOf();
 
     if (!item.available) {
       if (date < minDate || date > maxDate) {
         return;
       }
-      const generatedCalendarState = generateCalendar(internalState, config, item.date!, side);
+      const generatedCalendarState = generateCalendar(
+        internalState,
+        internalConfig,
+        item.date!,
+        side,
+      );
       internalState = generatedCalendarState;
-      setState(internalState);
     }
 
     if (endDate || date < startDate) {
-      config.endDate = "";
-      config.startDate = item.date;
+      internalConfig.endDate = "";
+      internalConfig.startDate = item.date;
       internalState.activeItem.left = item;
     } else if (!endDate && date < startDate) {
-      config.endDate = cloneDeep(config.startDate!) as string;
+      internalConfig.endDate = cloneDeep(internalConfig.startDate!) as string;
       internalState.activeItem.right = item;
     } else {
-      config.endDate = item.date;
+      internalConfig.endDate = item.date;
       internalState.activeItem.right = item;
     }
 
-    if (config.singleDatePicker) {
-      config.endDate = cloneDeep(config.startDate!) as string;
+    if (internalConfig.singleDatePicker) {
+      internalConfig.endDate = cloneDeep(internalConfig.startDate!) as string;
       internalState.activeItem.right = internalState.activeItem.left = item;
     }
 
+    const { _state: updatedState, _config: updateConfig } = handleDateChange(
+      internalState,
+      internalConfig,
+    );
+    internalState = updatedState;
+    internalConfig = updateConfig;
+
     setState(internalState);
-    doApply();
+    setConfig(internalConfig);
   };
 
   const onCellMouseEnter = (item: ActiveItemSide, itemCell: HTMLTableCellElement | null): void => {
@@ -106,13 +121,8 @@ const DateSelect: React.FC<Props> = ({
         }
       };
 
-      service.iterateOverDateObj(internalState.dates, func.bind(this));
+      iterateOverDateObj(internalState.dates, func.bind(this));
     } else {
-      // if (config.singleDatePicker) {
-      //   internalState.dateTitleText.right = activeItemInputFieldText;
-      // } else {
-      //   internalState.dateTitleText.left = activeItemInputFieldText;
-      // }
       internalState.dateTitleText[side] = activeItemInputFieldText;
     }
     setState(internalState);
@@ -123,7 +133,7 @@ const DateSelect: React.FC<Props> = ({
       const func = (rowItem: ActiveItemSide): void => {
         rowItem.inRange = false;
       };
-      service.iterateOverDateObj(state.dates, func.bind(this));
+      iterateOverDateObj(state.dates, func.bind(this));
     } else {
       updateActiveItemInputField(state, config);
     }
