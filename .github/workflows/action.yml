@@ -25,7 +25,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.2
+      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
         with:
           path: "./storybook-static"
           install_command: yarn install
