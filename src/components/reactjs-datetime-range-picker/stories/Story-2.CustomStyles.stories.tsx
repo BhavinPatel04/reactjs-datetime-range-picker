@@ -1,6 +1,5 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
 import moment from "moment";
 import { ReactJSDatetimeRangePicker, DateRangeModel, Options } from "../../..";
 import { DatetimeRangeType } from "../enum";
@@ -76,10 +75,18 @@ export const Date: Story = {
     placeholder: "Date",
     inputDateFormat: "YYYY-MM-DD",
     showRowNumber: true,
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
     inputAs: {
       classNames: "custom-input-class",
     },
@@ -115,10 +122,18 @@ export const DateTimezone: Story = {
     placeholder: "Date",
     inputDateFormat: "YYYY-MM-DD",
     showRowNumber: true,
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
     inputAs: {
       classNames: "custom-input-class",
     },
@@ -150,10 +165,18 @@ export const DateRange: Story = {
     label: "Date Range",
     placeholder: "Date Range",
     inputDateFormat: "YYYY-MM-DD",
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
     inputAs: {
       classNames: "custom-input-class",
     },
@@ -195,10 +218,18 @@ export const DateArrayRange: Story = {
     label: "Date Array Range",
     placeholder: "Date Array Range",
     inputDateFormat: "YYYY-MM-DD",
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
     inputAs: {
       classNames: "custom-input-class",
     },
@@ -231,10 +262,18 @@ export const DateTimeRange: Story = {
     label: "Date Time Range",
     placeholder: "Date Time Range",
     inputDateFormat: "YYYY-MM-DD",
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
     inputAs: {
       classNames: "custom-input-class",
     },

@@ -30,7 +30,7 @@ import {
   getDefaultOptions,
   getDefaultState,
   parseOptions,
-  getNgxDatetimeRangeChangeOutput,
+  getDatetimeRangeChangeOutput,
   generateCalendar,
   generateTimePicker,
   convertToViewTimeItem,
@@ -78,10 +78,10 @@ export interface Props {
   ariaLabels?: AriaLabelsOptions;
   dateRangeModel: DateRangeModel;
   canBeEmpty: boolean;
-  dateRangeModelChange?: (options: Options | DateRangeModel) => void;
-  dateRangeChanged?: (options: Options) => void;
-  inputFocusBlur?: (options: Record<string, unknown>) => void;
-  onSelectedDate?: (options: Options) => void;
+  onDateRangeModelChange?: (options: Options | DateRangeModel) => void;
+  onDateRangeChange?: (options: Options) => void;
+  onInputBlur?: (options: Record<string, unknown>) => void;
+  onDateSelect?: (options: Options) => void;
   inputAs?: INPUT_AS;
   selectAs?: SELECT_AS;
   buttonAs?: BUTTON_AS;
@@ -122,10 +122,10 @@ const DateTimeRangePicker: React.FC<Props> = ({
   ariaLabels,
   dateRangeModel: userDateRangeModel,
   canBeEmpty: userCanBeEmpty,
-  dateRangeModelChange,
-  dateRangeChanged,
-  inputFocusBlur,
-  onSelectedDate,
+  onDateRangeModelChange,
+  onDateRangeChange,
+  onInputBlur,
+  onDateSelect,
   inputAs,
   selectAs,
   buttonAs,
@@ -261,7 +261,6 @@ const DateTimeRangePicker: React.FC<Props> = ({
     const _state: State = Object.assign(getDefaultState(), state);
     _state.isValidFilter = false;
     _config = getCombinedConfig(_options, _settings, _config);
-    // setConfig(_config);
     setSettings(_settings);
     setOptions(_options);
     initialize(_state, _config, _dateRangeModel);
@@ -294,8 +293,8 @@ const DateTimeRangePicker: React.FC<Props> = ({
   };
 
   const onFocusInput = (event: MouseEvent | FocusEvent): void => {
-    inputFocusBlur &&
-      inputFocusBlur({
+    onInputBlur &&
+      onInputBlur({
         reason: InputFocusBlur.focus,
         value: (event.target as HTMLInputElement).value,
       });
@@ -307,8 +306,8 @@ const DateTimeRangePicker: React.FC<Props> = ({
       ...state,
       selectedDateText: value,
     });
-    inputFocusBlur &&
-      inputFocusBlur({
+    onInputBlur &&
+      onInputBlur({
         reason: InputFocusBlur.blur,
         value,
       });
@@ -319,7 +318,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
   };
 
   const dateRangeSelected = (__state: State, __config: Config): void => {
-    const dateRangeOuput: DateTimeRangeChangeOutput = getNgxDatetimeRangeChangeOutput(
+    const dateRangeOuput: DateTimeRangeChangeOutput = getDatetimeRangeChangeOutput(
       __config,
       __state,
     );
@@ -327,7 +326,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
       filterInputBox.current?.classList.remove("empty-filter");
     }
     doDateRangeModelChange();
-    dateRangeChanged && dateRangeChanged(dateRangeOuput);
+    onDateRangeChange && onDateRangeChange(dateRangeOuput);
     setState({
       ...__state,
       isCalendarVisible: false,
@@ -351,7 +350,7 @@ const DateTimeRangePicker: React.FC<Props> = ({
       dateRangeModel,
       config.inputDateFormat,
     );
-    dateRangeModelChange && dateRangeModelChange(changedDateRangeModel);
+    onDateRangeModelChange && onDateRangeModelChange(changedDateRangeModel);
   };
 
   const doApply = (
@@ -412,8 +411,8 @@ const DateTimeRangePicker: React.FC<Props> = ({
         ? moment(endDate, DEFAULT_DATE_FORMAT).format(_config.outputDateFormat)
         : null;
     }
-    onSelectedDate &&
-      onSelectedDate({
+    onDateSelect &&
+      onDateSelect({
         startDate: outputStartDate!,
         endDate: outputEndDate!,
       });
@@ -612,6 +611,10 @@ const DateTimeRangePicker: React.FC<Props> = ({
 
     _state.dateTitleText.left = startDate;
     _state.dateTitleText.right = endDate;
+
+    if (_config.singleDatePicker) {
+      _config.startTime = cloneDeep(_config.endTime) as string;
+    }
 
     setState(_state);
     setConfig(_config);

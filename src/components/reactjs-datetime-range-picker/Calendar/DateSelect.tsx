@@ -66,8 +66,8 @@ const DateSelect: React.FC<Props> = ({
       internalState.activeItem.right = item;
     }
 
-    if (internalConfig.singleDatePicker) {
-      internalConfig.endDate = cloneDeep(internalConfig.startDate!) as string;
+    if (internalConfig.singleDatePicker && internalConfig.startDate) {
+      internalConfig.endDate = cloneDeep(internalConfig.startDate) as string;
       internalState.activeItem.right = internalState.activeItem.left = item;
     }
 

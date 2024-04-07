@@ -1,6 +1,5 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
 import moment from "moment";
 import { ReactJSDatetimeRangePicker, DateRangeModel, Options } from "../../..";
 import { NextUIProvider } from "@nextui-org/system";
@@ -79,10 +78,18 @@ export const Date: Story = {
     buttonAs: {
       tag: Button,
     },
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
   },
 };
 
@@ -123,10 +130,18 @@ export const DateTimezone: Story = {
     buttonAs: {
       tag: Button,
     },
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
   },
 };
 
@@ -163,10 +178,18 @@ export const DateRange: Story = {
     buttonAs: {
       tag: Button,
     },
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
   },
 };
 
@@ -213,10 +236,18 @@ export const DateArrayRange: Story = {
     buttonAs: {
       tag: Button,
     },
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
   },
 };
 
@@ -254,9 +285,17 @@ export const DateTimeRange: Story = {
     buttonAs: {
       tag: Button,
     },
-    dateRangeModelChange: fn(),
-    onSelectedDate: fn(),
-    dateRangeChanged: fn(),
-    inputFocusBlur: fn(),
+    onDateRangeModelChange: (options) => {
+      console.log("Date range model changed", options);
+    },
+    onDateSelect: (options) => {
+      console.log("Date selected", options);
+    },
+    onDateRangeChange: (options) => {
+      console.log("Date range changed", options);
+    },
+    onInputBlur: (options) => {
+      console.log("Input blurred", options);
+    },
   },
 };

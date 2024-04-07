@@ -32,7 +32,9 @@ const TimezoneSelect: React.FC<Props> = ({ state, config, setState }) => {
             >
               {tz}
             </div>
-            {idx !== state.timeZones.length - 1 && <div className="vertical-divider"></div>}
+            {idx !== state.timeZones.length - 1 && (
+              <div key={`divider-${idx}`} className="vertical-divider"></div>
+            )}
           </>
         ))}
       </div>

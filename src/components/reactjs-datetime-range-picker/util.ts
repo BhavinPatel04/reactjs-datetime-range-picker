@@ -1440,12 +1440,12 @@ export const getDateRangeModel = (
     dRModel = cloneDeep(dateRangeModel) as DateTimeRangeModelChangeOutput;
   }
   if (config.type) {
-    dRModel[config.type] = getNgxDatetimeRangeChangeOutput(config, state, format);
+    dRModel[config.type] = getDatetimeRangeChangeOutput(config, state, format);
   }
   return dRModel;
 };
 
-export const getNgxDatetimeRangeChangeOutput = (
+export const getDatetimeRangeChangeOutput = (
   config: Config,
   state: State,
   format?: string,
