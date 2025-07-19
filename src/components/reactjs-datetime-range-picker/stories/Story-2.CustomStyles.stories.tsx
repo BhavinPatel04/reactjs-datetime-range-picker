@@ -1,5 +1,5 @@
 import React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import moment from "moment";
 import { ReactJSDatetimeRangePicker, DateRangeModel, Options } from "../../..";
 import { DatetimeRangeType } from "../enum";

@@ -2,7 +2,7 @@
   "name": "reactjs-datetime-range-picker",
   "description": "ReactJS datetime range picker with daily, weekly, monthly, quarterly &amp; yearly levels",
   "private": false,
-  "version": "1.1.0",
+  "version": "2.0.0",
   "homepage": "https://bhavinpatel04.github.io/reactjs-datetime-range-picker",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
@@ -72,15 +72,10 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^8.0.0",
-    "@storybook/addon-interactions": "^8.0.0",
-    "@storybook/addon-links": "^8.0.0",
-    "@storybook/blocks": "^8.0.0",
-    "@storybook/react": "^8.0.0",
-    "@storybook/react-vite": "^8.0.0",
-    "@storybook/test": "^8.0.0",
+    "@storybook/addon-links": "^9.0.17",
+    "@storybook/react-vite": "^9.0.17",
     "@types/node": "^20.11.24",
-    "@types/react": "^18.2.61",
+    "@types/react": "^19",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
     "@vitejs/plugin-react": "^4.2.1",
@@ -103,10 +98,10 @@
     "postcss-import": "^16.0.1",
     "postcss-nesting": "^12.0.4",
     "prettier": "^3.2.5",
-    "react": "^18.2.0",
-    "react-dom": "18.2.0",
-    "reactjs-datetime-range-picker": "^0.0.6",
-    "storybook": "^8.0.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "reactjs-datetime-range-picker": "^1",
+    "storybook": "^9.0.17",
     "tailwind-variants": "^0.2.0",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
@@ -115,10 +110,13 @@
     "vite": "^5.1.4",
     "vite-plugin-dts": "^3.7.3",
     "vite-plugin-linter": "^2.1.1",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vite-tsconfig-paths": "^4.3.1",
+    "eslint-plugin-storybook": "9.0.17",
+    "@storybook/addon-docs": "^9.0.17"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^19",
+    "react-dom": "^19"
   },
   "dependencies": {
     "@nextui-org/button": "^2.0.27",
